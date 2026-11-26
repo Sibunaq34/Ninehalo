@@ -1,0 +1,16 @@
+﻿using API_NineHalo.Entities;
+
+namespace API_NineHalo.Services
+{
+    public interface IPersonaService
+    {
+        Task<(bool Success, string Message, int? IdUsuario)> LoginAsync(string correo, string password);
+        Task<(bool Success, string Message, int? IdUsuario)> RegisterAsync(RegisterRequest request);
+        Task<(bool Success, string Message, ProfileDto? Profile)> GetProfileAsync(int idUsuario);
+        Task<(bool Success, string Message, ProfileEditedDto? Profile)> UpdateProfileAsync(int idUsuario, ProfileUpdateRequest request);
+        Task<(bool Success, string Message, IEnumerable<EstadisticaDto>?)> GetStatisticsAsync(int idUsuario);
+        Task<(bool Success, string Message, PagedTicketsDto? Data)> GetTicketsAsync(int idUsuario, int pagina);
+        Task<(bool Success, string Message, int? IdSoporte)> CreateTicketAsync(CreateTicketRequest request);
+        Task<(bool Success, string Message)> ChangePasswordAsync(int idUsuario, ChangePasswordRequest request);
+    }
+}

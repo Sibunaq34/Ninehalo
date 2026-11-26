@@ -1,0 +1,14 @@
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\bin\Debug\net10.0\payment-verification.exe
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\bin\Debug\net10.0\payment-verification.deps.json
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\bin\Debug\net10.0\payment-verification.runtimeconfig.json
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\bin\Debug\net10.0\payment-verification.dll
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\bin\Debug\net10.0\payment-verification.pdb
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.GeneratedMSBuildEditorConfig.editorconfig
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.AssemblyInfoInputs.cache
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.AssemblyInfo.cs
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.csproj.CoreCompileInputs.cache
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.dll
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\refint\payment-verification.dll
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.pdb
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\payment-verification.genruntimeconfig.cache
+D:\Universidad\Programacion\JavaScript\NineHalo\APIs\API_NineHalo\payment-verification\obj\Debug\net10.0\ref\payment-verification.dll

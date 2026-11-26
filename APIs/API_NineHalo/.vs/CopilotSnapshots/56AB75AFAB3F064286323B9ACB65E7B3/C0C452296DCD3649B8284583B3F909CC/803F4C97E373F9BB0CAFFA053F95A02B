@@ -1,0 +1,258 @@
+﻿using API_NineHalo.Entities;
+using API_NineHalo.Repository;
+using BCrypt.Net;
+
+namespace API_NineHalo.Services
+{
+    public class PersonaService : IPersonaService
+    {
+        private readonly PersonaRepository _repository;
+
+        public PersonaService(PersonaRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<(bool Success, string Message, int? IdUsuario)> RegisterAsync(RegisterRequest request)
+        {
+            // Validaciones básicas
+            if (request == null)
+                return (false, "Datos de registro inválidos.", null);
+
+            if (string.IsNullOrWhiteSpace(request.Id) || string.IsNullOrWhiteSpace(request.Nombre) || string.IsNullOrWhiteSpace(request.Apellidos) || string.IsNullOrWhiteSpace(request.Correo) || string.IsNullOrWhiteSpace(request.Password))
+                return (false, "Todos los campos son obligatorios.", null);
+
+            // Longitudes según el procedimiento
+            if (request.Id.Length > 20)
+                return (false, "La identificación supera el máximo de 20 caracteres.", null);
+            if (request.Nombre.Length > 100 || request.Apellidos.Length > 100)
+                return (false, "Nombre o apellidos exceden la longitud máxima de 100 caracteres.", null);
+            if (request.Telefono != null && request.Telefono.Length > 20)
+                return (false, "El teléfono excede la longitud máxima de 20 caracteres.", null);
+            if (request.Correo.Length > 150)
+                return (false, "El correo excede la longitud máxima de 150 caracteres.", null);
+            if (request.Password.Length == 0)
+                return (false, "La contraseña es obligatoria.", null);
+
+            // Validar formato de correo
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(request.Correo.Trim());
+                if (addr.Address != request.Correo.Trim())
+                    return (false, "Correo electrónico inválido.", null);
+            }
+            catch
+            {
+                return (false, "Correo electrónico inválido.", null);
+            }
+
+            // Generar hash de la contraseña usando BCrypt (compatible con login)
+            string passwordHash;
+            try
+            {
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            }
+            catch
+            {
+                return (false, "Error al procesar la contraseña.", null);
+            }
+
+            // Llamar al repository
+            var result = await _repository.RegisterUserAsync(request.Id.Trim(), request.Nombre.Trim(), request.Apellidos.Trim(), request.Telefono?.Trim() ?? string.Empty, request.Correo.Trim(), passwordHash);
+
+            if (result == null)
+            {
+                return (false, "Error interno al registrar usuario.", null);
+            }
+
+            if (result is string msg)
+            {
+                // Interpretar mensaje de duplicidad u otro mensaje devuelto por el procedimiento
+                if (msg.Contains("Duplicate entry", StringComparison.OrdinalIgnoreCase) || msg.Contains("duplicate", StringComparison.OrdinalIgnoreCase) || msg.Contains("ya está registrado", StringComparison.OrdinalIgnoreCase))
+                {
+                    return (false, "Identificación o correo ya registrados.", null);
+                }
+
+                return (false, msg, null);
+            }
+
+            try
+            {
+                dynamic dyn = result;
+                object? idVal = dyn.id_usuario ?? dyn.idUsuario ?? dyn.Id;
+                if (idVal == null)
+                    return (false, "No se recibió el identificador del usuario.", null);
+
+                if (!int.TryParse(idVal.ToString(), out int idUsuario))
+                    return (false, "El identificador devuelto no es válido.", null);
+
+                return (true, "Usuario registrado correctamente.", idUsuario);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (false, "Error al procesar la respuesta del servidor.", null);
+            }
+        }
+
+        public async Task<(bool Success, string Message, int? IdUsuario)> LoginAsync(string correo, string password)
+        {
+            // Normalizar correo mínimo: eliminar espacios alrededor
+            var correoTrim = correo?.Trim() ?? string.Empty;
+            var user = await _repository.GetUserByEmailAsync(correoTrim);
+            if (user == null)
+            {
+                return (false, "Correo o contraseña incorrectos.", null);
+            }
+
+            // Verificar contraseña.
+            // Soportar dos casos según lo almacenado en la base de datos:
+            // 1) Hash (BCrypt) -> usar BCrypt.Verify
+            // 2) Texto plano (migración pendiente) -> comparar directamente (solo fallback)
+            var stored = user.Password ?? string.Empty;
+            var isVerified = false;
+
+            if (!string.IsNullOrEmpty(stored) && (stored.StartsWith("$2a$") || stored.StartsWith("$2b$") || stored.StartsWith("$2y$") || stored.StartsWith("$2x$")))
+            {
+                try
+                {
+                    isVerified = BCrypt.Net.BCrypt.Verify(password, stored);
+                }
+                catch
+                {
+                    // No revelar detalles de errores criptográficos
+                    return (false, "Correo o contraseña incorrectos.", null);
+                }
+            }
+            else
+            {
+                // Fallback: comparar texto plano (inseguro). Recomendar migración a hashes.
+                isVerified = string.Equals(password, stored, StringComparison.Ordinal);
+            }
+
+            if (!isVerified)
+            {
+                return (false, "Correo o contraseña incorrectos.", null);
+            }
+
+            if (string.Equals(user.Estado, "INACTIVO", StringComparison.OrdinalIgnoreCase))
+            {
+                return (false, "Usuario inactivo.", null);
+            }
+
+            return (true, "Inicio de sesión exitoso.", user.Id_Usuario);
+        }
+
+        public async Task<(bool Success, string Message, ProfileDto? Profile)> GetProfileAsync(int idUsuario)
+        {
+            var profile = await _repository.GetProfileAsync(idUsuario);
+            if (profile == null)
+            {
+                return (false, "Perfil no encontrado.", null);
+            }
+
+            return (true, "Perfil obtenido correctamente.", profile);
+        }
+
+        public async Task<(bool Success, string Message, ProfileEditedDto? Profile)> UpdateProfileAsync(int idUsuario, ProfileUpdateRequest request)
+        {
+            if (idUsuario <= 0)
+                return (false, "Id de usuario inválido.", null);
+            if (string.IsNullOrWhiteSpace(request.Nombre) || string.IsNullOrWhiteSpace(request.Apellidos) || string.IsNullOrWhiteSpace(request.Correo))
+                return (false, "Nombre, apellidos y correo electrónico son obligatorios", null);
+
+            // Llamar al repository. El repository devuelve dinámico que puede ser:
+            // - Una fila con los datos actualizados
+            // - Un valor/string con un mensaje de error
+            var result = await _repository.EditProfileAsync(idUsuario, request.Nombre.Trim(), request.Apellidos.Trim(), request.Correo.Trim());
+
+            if (result == null)
+            {
+                return (false, "Error interno al actualizar perfil.", null);
+            }
+
+            // Si el procedimiento devolvió un string con un mensaje de error, conservarlo
+            if (result is string str)
+            {
+                return (false, str, null);
+            }
+
+
+            try
+            {
+                dynamic dyn = result;
+
+                object? idValue = dyn.id ?? dyn.Id;
+                object? nombreValue = dyn.nombre ?? dyn.Nombre;
+                object? apellidosValue = dyn.apellidos ?? dyn.Apellidos;
+                object? correoValue = dyn.correo ?? dyn.Correo;
+
+                if (!int.TryParse(idValue?.ToString(), out int id))
+                {
+                    return (false, "El ID recibido no es válido.", null);
+                }
+
+                var mapped = new ProfileEditedDto
+                {
+                    Id = id,
+                    Nombre = nombreValue?.ToString(),
+                    Apellidos = apellidosValue?.ToString(),
+                    Correo = correoValue?.ToString()
+                };
+
+                return (true, "Perfil actualizado correctamente.", mapped);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return (false, "Error al procesar la respuesta del servidor.", null);
+            }
+
+        }
+
+        public async Task<(bool Success, string Message, IEnumerable<EstadisticaDto>?)> GetStatisticsAsync(int idUsuario)
+        {
+
+
+            if (idUsuario <= 0)
+                return (false, "Id de usuario inválido.", null);
+
+            var raw = await _repository.GetStatisticsAsync(idUsuario);
+
+            if (raw == null)
+                return (false, "Error interno al consultar estadísticas.", null);
+
+
+            if (raw is string message)
+                return (false, message, null);
+
+            try
+            {
+                var list = new List<EstadisticaDto>();
+
+                foreach (var item in (System.Collections.IEnumerable)raw)
+                {
+                    dynamic dyn = item;
+
+                    var dto = new EstadisticaDto {
+                        Plataforma = dyn.plataforma?.ToString()
+                                     ?? dyn.Plataforma?.ToString(),
+
+                        Jugadores_Baneados = Convert.ToInt32(
+                            dyn.jugadores_baneados ?? dyn.Jugadores_Baneados
+                        )
+                    };
+
+                    list.Add(dto);
+                }
+
+                return (true,"Estadísticas obtenidas correctamente.",list);
+            }
+            catch (Exception ex)
+            {
+                return (false,$"Error al procesar las estadísticas: {ex.Message}", null);
+            }
+      
+        }
+    }
+}

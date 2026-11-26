@@ -1,0 +1,32 @@
+﻿using API_NineHalo.Endpoints;
+using API_NineHalo.Repository;
+using API_NineHalo.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddOpenApi();
+
+// Register DB factory and application services
+builder.Services.AddTransient<IDbConnectionF, DbConnectionFactory>();
+builder.Services.AddTransient<IPersonaRepository, PersonaRepository>();
+builder.Services.AddTransient<IPersonaService, PersonaService>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+// Map application endpoints
+app.MapPersonaEndpoints();
+
+// Keep a simple test endpoint if needed
+app.MapGet("/weatherforecast", () =>
+{
+    return new[] { "API NineHalo is running." };
+}).WithName("Health");
+
+app.Run();

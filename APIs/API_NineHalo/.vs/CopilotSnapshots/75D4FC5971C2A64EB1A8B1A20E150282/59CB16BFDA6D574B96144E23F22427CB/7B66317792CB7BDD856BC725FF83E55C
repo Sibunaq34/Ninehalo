@@ -1,0 +1,75 @@
+﻿using API_NineHalo.Entities;
+using API_NineHalo.Repository;
+using BCrypt.Net;
+
+namespace API_NineHalo.Services
+{
+    public class PersonaService : IPersonaService
+    {
+        private readonly PersonaRepository _repository;
+
+        public PersonaService(PersonaRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<(bool Success, string Message, int? IdUsuario)> LoginAsync(string correo, string password)
+        {
+            // Normalizar correo mínimo: eliminar espacios alrededor
+            var correoTrim = correo?.Trim() ?? string.Empty;
+            var user = await _repository.GetUserByEmailAsync(correoTrim);
+            if (user == null)
+            {
+                return (false, "Correo o contraseña incorrectos.", null);
+            }
+
+            // Verificar contraseña.
+            // Soportar dos casos según lo almacenado en la base de datos:
+            // 1) Hash (BCrypt) -> usar BCrypt.Verify
+            // 2) Texto plano (migración pendiente) -> comparar directamente (solo fallback)
+            var stored = user.Password ?? string.Empty;
+            var isVerified = false;
+
+            if (!string.IsNullOrEmpty(stored) && (stored.StartsWith("$2a$") || stored.StartsWith("$2b$") || stored.StartsWith("$2y$") || stored.StartsWith("$2x$")))
+            {
+                try
+                {
+                    isVerified = BCrypt.Net.BCrypt.Verify(password, stored);
+                }
+                catch
+                {
+                    // No revelar detalles de errores criptográficos
+                    return (false, "Correo o contraseña incorrectos.", null);
+                }
+            }
+            else
+            {
+                // Fallback: comparar texto plano (inseguro). Recomendar migración a hashes.
+                isVerified = string.Equals(password, stored, StringComparison.Ordinal);
+            }
+
+            if (!isVerified)
+            {
+                return (false, "Correo o contraseña incorrectos.", null);
+            }
+
+            if (string.Equals(user.Estado, "INACTIVO", StringComparison.OrdinalIgnoreCase))
+            {
+                return (false, "Usuario inactivo.", null);
+            }
+
+            return (true, "Inicio de sesión exitoso.", user.Id_Usuario);
+        }
+
+        public async Task<(bool Success, string Message, ProfileDto? Profile)> GetProfileAsync(int idUsuario)
+        {
+            var profile = await _repository.GetProfileAsync(idUsuario);
+            if (profile == null)
+            {
+                return (false, "Perfil no encontrado.", null);
+            }
+
+            return (true, "Perfil obtenido correctamente.", profile);
+        }
+    }
+}

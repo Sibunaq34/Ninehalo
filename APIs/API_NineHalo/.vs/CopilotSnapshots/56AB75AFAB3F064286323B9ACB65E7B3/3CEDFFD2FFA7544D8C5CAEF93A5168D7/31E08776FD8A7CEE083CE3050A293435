@@ -1,0 +1,89 @@
+﻿using API_NineHalo.Entities;
+using Dapper;
+using MySql.Data.MySqlClient;
+using System.Data;
+using System.Net;
+
+namespace API_NineHalo.Repository
+{
+    public class PersonaRepository
+    {
+        private readonly IDbConnectionF _dbFactory;
+
+        public PersonaRepository(IDbConnectionF dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        public async Task<UserAuthEntity?> GetUserByEmailAsync(string correo)
+        {
+            using var conn = _dbFactory.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("p_correo", correo, DbType.String);
+
+            var result = await conn.QueryFirstOrDefaultAsync<UserAuthEntity>("sp_login", parameters, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+        public async Task<ProfileDto?> GetProfileAsync(int idUsuario)
+        {
+            using (var connection = _dbFactory.CreateConnection())
+            { 
+                var usuario = await connection.QueryFirstOrDefaultAsync<ProfileDto>(
+                    "sp_consultar_perfil",
+                    new
+                    {
+                        p_id_usuario = idUsuario
+                    },
+                    commandType: CommandType.StoredProcedure
+                );
+                return usuario;
+            }
+        }
+
+        public async Task<object?> EditProfileAsync(int idUsuario, string nombre, string apellidos, string correo)
+        {
+            using var connection = _dbFactory.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+            parameters.Add("p_nombre", nombre, DbType.String);
+            parameters.Add("p_apellidos", apellidos, DbType.String);
+            parameters.Add("p_correo", correo, DbType.String);
+
+            // El procedimiento puede devolver una fila con los datos actualizados
+            // o puede devolver un mensaje de error (como un único valor/string).
+            var result = await connection.QueryFirstOrDefaultAsync("sp_editar_perfil", parameters, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+        public async Task<object?> GetStatisticsAsync(int idUsuario)
+        {
+            try
+            {
+                using var connection = _dbFactory.CreateConnection();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+
+                var result = await connection.QueryAsync(
+                    "sp_consultar_estadisticas",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                return result;
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Message.Contains(
+                    "El usuario no tiene una licencia activa",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return ex.Message;
+                }
+
+                throw;
+            }
+        }
+    }
+}

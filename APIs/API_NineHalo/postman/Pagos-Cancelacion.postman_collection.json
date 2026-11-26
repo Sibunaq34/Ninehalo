@@ -1,0 +1,168 @@
+{
+  "info": {
+    "name": "NineHalo - rechazos y cancelación",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Ejecutar solo con cuentas y BD de prueba. El servidor determina el importe (53.98 USD con catálogo 19.99 + 39.99 y NINE10). Nunca liberar un pago incierto usando sessionStorage. La ruta bancaria requiere un intento firmado por APICompras; la PWA usa /pagar/{metodo}. Estados LIBRE/RECHAZADO permiten cancelar; EN_CURSO/INCIERTO/CONFIRMADO/LEGADO lo impiden. PayPal conserva bloqueo y consulta Orders v2 al revisar/capturar. Operaciones anteriores sin evidencia requieren revisión de soporte."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5253"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "operation",
+      "value": ""
+    },
+    {
+      "key": "sinpe_without_funds",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Registrar pedido mixto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/compras/carrito",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clave_operacion\": \"{{operation}}\",\n  \"cupon\": \"NINE10\",\n  \"items\": [\n    {\n      \"id_licencia\": 2,\n      \"cantidad\": 1,\n      \"precio_unitario\": 19.99\n    },\n    {\n      \"id_licencia\": 3,\n      \"cantidad\": 1,\n      \"precio_unitario\": 39.99\n    }\n  ]\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Catálogo y total definitivo',()=>{pm.response.to.have.status(201);const d=pm.response.json().data;pm.expect(d.total).to.eql(53.98);pm.expect(d.cupon).to.eql('NINE10');pm.expect(d.items[0].precio_unitario).to.eql(19.99);});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "SINPE sin fondos de prueba",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/compras/carrito/{{operation}}/pagar/sinpe",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"telefono\": \"{{sinpe_without_funds}}\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Rechazo definitivo: 422 y código estable',()=>{pm.response.to.have.status(422);const p=pm.response.json();pm.expect(p.ok).to.eql(false);pm.expect(p.definitivo).to.eql(true);pm.expect(p.codigo).to.eql('FONDOS_INSUFICIENTES');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultar y conciliar intento",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/api/compras/carrito/{{operation}}/estado-pago"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Estado consultado',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cancelar pedido pendiente sin cobro activo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/compras/carrito/{{operation}}/cancelar",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Cancelado',()=>{pm.response.to.have.status(200);pm.expect(pm.response.json().data.estado).to.eql('CANCELADO');});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reintentar cancelación idempotente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/compras/carrito/{{operation}}/cancelar",
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Cancelado',()=>{pm.response.to.have.status(200);pm.expect(pm.response.json().data.estado).to.eql('CANCELADO');});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

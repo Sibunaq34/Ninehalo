@@ -1,0 +1,645 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "APIUsuarios | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7209"
+    },
+    {
+      "url": "http://localhost:5145"
+    }
+  ],
+  "paths": {
+    "/api/registro": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "RegisterUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/registro/verificar-codigo": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "VerifyRegistrationCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyLoginCodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/verificar-codigo": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "VerifyLoginCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyLoginCodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/perfil/{id}/password": {
+      "put": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "ChangePassword",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/enviar-codigo": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "SendLoginCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendLoginCodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/perfil/autenticador": {
+      "get": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/perfil/autenticador/vincular": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticatorPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/perfil/autenticador/confirmar": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticatorConfirmationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/perfil/autenticador/desactivar": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticatorConfirmationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/autenticador/estado": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyAuthenticatorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/autenticador/verificar": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyAuthenticatorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/recuperacion/preguntas": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryQuestionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/recuperacion/autenticador": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryAuthenticatorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/login/recuperacion/restablecer": {
+      "post": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ubicaciones/paises": {
+      "get": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "ListarPaises",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ubicaciones/paises/{id}/provincias": {
+      "get": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "ListarProvincias",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ubicaciones/provincias/{id}/cantones": {
+      "get": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "ListarCantones",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/ubicaciones/cantones/{id}/distritos": {
+      "get": {
+        "tags": [
+          "APIUsuarios"
+        ],
+        "operationId": "ListarDistritos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthenticatorConfirmationRequest": {
+        "type": "object",
+        "properties": {
+          "id_Vinculacion": {
+            "type": "string"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthenticatorPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "password_Actual": {
+            "type": "string"
+          },
+          "password_Nueva": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "correo": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "RecoveryAuthenticatorRequest": {
+        "required": [
+          "correo",
+          "codigo"
+        ],
+        "type": "object",
+        "properties": {
+          "correo": {
+            "type": "string"
+          },
+          "codigo": {
+            "type": "string"
+          }
+        }
+      },
+      "RecoveryPasswordRequest": {
+        "required": [
+          "token",
+          "password_Nueva",
+          "confirmacion"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "password_Nueva": {
+            "type": "string"
+          },
+          "confirmacion": {
+            "type": "string"
+          }
+        }
+      },
+      "RecoveryQuestionsRequest": {
+        "required": [
+          "correo",
+          "identificacion",
+          "telefono"
+        ],
+        "type": "object",
+        "properties": {
+          "correo": {
+            "type": "string"
+          },
+          "identificacion": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "id_pais": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "id_provincia": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "id_canton": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "id_distrito": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "id": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "apellidos": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "correo": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "SendLoginCodeRequest": {
+        "type": "object",
+        "properties": {
+          "pre_auth_token": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyAuthenticatorRequest": {
+        "type": "object",
+        "properties": {
+          "pre_Auth_Token": {
+            "type": "string"
+          },
+          "codigo": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyLoginCodeRequest": {
+        "required": [
+          "codigo"
+        ],
+        "type": "object",
+        "properties": {
+          "id_verificacion": {
+            "maximum": 9223372036854776000,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "codigo": {
+            "pattern": "^[0-9]{6}$",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "APIUsuarios"
+    }
+  ]
+}

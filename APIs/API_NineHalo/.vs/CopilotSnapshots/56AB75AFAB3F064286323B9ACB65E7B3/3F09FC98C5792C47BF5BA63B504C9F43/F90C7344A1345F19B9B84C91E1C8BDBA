@@ -1,0 +1,176 @@
+﻿using API_NineHalo.Entities;
+using Dapper;
+using MySql.Data.MySqlClient;
+using System.Data;
+using System.Net;
+
+namespace API_NineHalo.Repository
+{
+    public class PersonaRepository
+    {
+        private readonly IDbConnectionF _dbFactory;
+
+        public PersonaRepository(IDbConnectionF dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+    
+
+        public async Task<ProfileDto?> GetProfileAsync(int idUsuario)
+        {
+            using (var connection = _dbFactory.CreateConnection())
+            { 
+                var usuario = await connection.QueryFirstOrDefaultAsync<ProfileDto>(
+                    "sp_consultar_perfil",
+                    new
+                    {
+                        p_id_usuario = idUsuario
+                    },
+                    commandType: CommandType.StoredProcedure
+                );
+                return usuario;
+            }
+        }
+
+        public async Task<object?> EditProfileAsync(int idUsuario, string nombre, string apellidos, string correo)
+        {
+            using var connection = _dbFactory.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+            parameters.Add("p_nombre", nombre, DbType.String);
+            parameters.Add("p_apellidos", apellidos, DbType.String);
+            parameters.Add("p_correo", correo, DbType.String);
+
+            // El procedimiento puede devolver una fila con los datos actualizados
+            // o puede devolver un mensaje de error (como un único valor/string).
+            var result = await connection.QueryFirstOrDefaultAsync("sp_editar_perfil", parameters, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+        public async Task<object?> GetStatisticsAsync(int idUsuario)
+        {
+            try
+            {
+                using var connection = _dbFactory.CreateConnection();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+
+                var result = await connection.QueryAsync(
+                    "sp_consultar_estadisticas",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                return result;
+            }
+            catch (MySqlException ex)
+            {
+                if (ex.Message.Contains(
+                    "El usuario no tiene una licencia activa",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return ex.Message;
+                }
+
+                throw;
+            }
+        }
+
+        public async Task<object?> GetTicketsAsync(int idUsuario, int pagina)
+        {
+            try
+            {
+                using var connection = _dbFactory.CreateConnection();
+
+                var parameters = new DynamicParameters();
+                parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+                parameters.Add("p_pagina", pagina, DbType.Int32);
+
+                using var multi = await connection.QueryMultipleAsync(
+                    "sp_consultar_tickets",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                var tickets = (await multi.ReadAsync()).Select(dynamicItem =>
+                {
+                    dynamic d = dynamicItem;
+                    return new TicketDto
+                    {
+                        Id_Soporte = Convert.ToInt32(d.id_soporte ?? d.idSoporte ?? d.Id_Soporte ?? d.IdSoporte),
+                        Titulo = (d.titulo ?? d.Titulo)?.ToString() ?? string.Empty,
+                        Fecha_Creacion = Convert.ToDateTime(d.fecha_creacion ?? d.Fecha_Creacion),
+                        Estado = (d.estado ?? d.Estado)?.ToString() ?? string.Empty
+                    };
+                }).ToList();
+
+                int totalTickets = 0;
+                if (!multi.IsConsumed)
+                {
+                    var second = await multi.ReadFirstOrDefaultAsync();
+                    if (second != null)
+                    {
+                        // intentar mapear a propiedad numérica
+                        object? val = second.total_tickets ?? second.Total_Tickets ?? second.totalTickets ?? second.TotalTickets ?? second.total;
+                        if (val != null && int.TryParse(val.ToString(), out int parsed))
+                            totalTickets = parsed;
+                    }
+                }
+
+                return new { Tickets = tickets, TotalTickets = totalTickets };
+            }
+            catch (MySqlException ex)
+            {
+                // Pasar mensaje especial si indica falta de licencia
+                if (ex.Message.Contains("licencia activa", StringComparison.OrdinalIgnoreCase) || ex.Message.Contains("no tiene una licencia activa", StringComparison.OrdinalIgnoreCase))
+                    return ex.Message;
+
+                throw;
+            }
+        }
+
+        public async Task<object?> RegisterTicketAsync(int idUsuario, string titulo, string detalle)
+        {
+            try
+            {
+                using var connection = _dbFactory.CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+                parameters.Add("p_titulo", titulo, DbType.String);
+                parameters.Add("p_detalle", detalle, DbType.String);
+
+                var result = await connection.QueryFirstOrDefaultAsync("sp_registrar_ticket", parameters, commandType: CommandType.StoredProcedure);
+                return result;
+            }
+            catch (MySqlException ex)
+            {
+                // Si es error de falta de licencia, dejar que el servicio lo interprete
+                if (ex.Message.Contains("licencia activa", StringComparison.OrdinalIgnoreCase))
+                    return ex.Message;
+
+                throw;
+            }
+        }
+
+        public async Task<object?> ChangePasswordAsync(int idUsuario, string passwordHash)
+        {
+            try
+            {
+                using var connection = _dbFactory.CreateConnection();
+                var parameters = new DynamicParameters();
+                parameters.Add("p_id_usuario", idUsuario, DbType.Int32);
+                parameters.Add("p_password_nueva", passwordHash, DbType.String);
+
+                var result = await connection.QueryFirstOrDefaultAsync("sp_cambiar_password", parameters, commandType: CommandType.StoredProcedure);
+                return result;
+            }
+            catch (MySqlException ex)
+            {
+                return ex.Message;
+            }
+        }
+
+    }
+}

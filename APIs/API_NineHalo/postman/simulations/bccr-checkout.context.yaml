@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: BCCR SDDE REST sale indicator 318 and PayPal Orders v2 used by Nine Halo checkout.
+  unblocks: Deterministic HTTP tests of rate validation, caching, billing snapshots and payment recovery.
+assumptions:
+  - id: sdde-contract
+    status: supported
+    claim: SDDE uses Bearer authentication and returns indicator series under datos[].series with fecha and valorDatoPorPeriodo.
+    reason: Confirmed against the official SDDE standard and a successful live request using the user's locally stored token.
+    verification: Live query on 2026-11-19 returned sale rate 447.54 CRC per USD with publication date 2026-11-19. The token was read locally and never printed or sent to the simulation.
+    source: https://gee.bccr.fi.cr/indicadoreseconomicos/Documentos/DocumentosMetodologiasNotasTecnicas/Estandar_API_SDDE.pdf; APICompras/Service/BccrService.cs
+    updated_at: '2026-11-19'
+  - id: controlled-failure-and-cache
+    status: supported
+    claim: In the tested scenarios APICompras caches successful quotes for 15 minutes, rejects invalid or obsolete observations and refuses a fabricated fallback after expiration.
+    reason: The actual HTTP client ran against the SDDE contract-based mock.
+    verification: 15 BCCR checks passed for auth errors, outages, malformed JSON, nulls, future dates, conflicting values, cache reuse and recovery.
+    source: bccr-verification/Program.cs; postman/mocks/bccr/default.js
+    updated_at: '2026-11-19'
+  - id: invoice-snapshot
+    status: supported
+    claim: New checkout snapshots preserve the BCCR rate, source and date; issued receipts remain immutable.
+    reason: The invoice repository was exercised against isolated MySQL while HTTP dependencies ran in this simulation.
+    verification: 32 repository and payment checks passed; 33 browser checks passed with a fake SDK and backend, including official-rate display and failure handling. No real payment was made.
+    source: paypal-verification/Program.cs; APICompras/Repository/FacturaRepository.cs
+    updated_at: '2026-11-19'
+fingerprints:
+  - id: integration
+    date: '2026-11-19'
+    commit: null
+    cli: '1.76.0'

@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="APICompras/APICompras.csproj" Id="fced53a5-1746-41bb-9eea-443a1f88eac5" />
+  <Project Path="APIEstadisticas/APIEstadisticas.csproj" Id="ce7a7d77-0105-4a75-a760-cda151cdaef7" />
+  <Project Path="APILicencias/APILicencias.csproj" Id="177a097f-4c94-4c7a-89cc-26a39e6ca90f" />
+  <Project Path="APISoporte/APISoporte.csproj" Id="435134ef-a517-482d-b8d7-9e1292b27145" />
+  <Project Path="APIUsuarios/APIUsuarios.csproj" Id="61178b8e-9203-4f4d-8e5d-800eb7342944" />
+  <Project Path="API_NineHalo/API_Persona.csproj" />
+  <Project Path="Gateway/Gateway.csproj" Id="66680ac6-7f3f-41b0-bbff-c962058ec085" />
+</Solution>

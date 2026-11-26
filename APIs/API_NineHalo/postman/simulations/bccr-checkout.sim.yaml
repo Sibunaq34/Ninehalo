@@ -1,0 +1,21 @@
+# Simulation scaffold. Add fault-injection scenarios under each mock, e.g.:
+#   scenarios:
+#     - overrides:
+#         conditions:
+#           latency: { delay_ms: 500 }
+# Then serve it with: postman simulation run <this file>
+
+simulation: bccr-checkout
+routing: path
+mocks:
+  - name: paypal-sandbox
+    routeKey: paypal
+    origin:
+      - api-m.sandbox.paypal.com
+    path: postman/mocks/paypal
+
+  - name: bccr-sdde
+    routeKey: bccr
+    origin:
+      - apim.bccr.fi.cr
+    path: postman/mocks/bccr

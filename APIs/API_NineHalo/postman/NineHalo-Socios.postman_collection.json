@@ -1,0 +1,630 @@
+{
+  "info": {
+    "name": "NineHalo - APIs de socios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Arranca YARP y las APIs correspondientes. Ejecuta las consultas manualmente. Los POST pueden crear pedidos, ventas, casos o avisos. Usa tu entorno local de pruebas."
+  },
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:5253"
+    },
+    {
+      "key": "salesforceKey",
+      "value": ""
+    },
+    {
+      "key": "contaCloudKey",
+      "value": ""
+    },
+    {
+      "key": "notifyHubKey",
+      "value": ""
+    },
+    {
+      "key": "promoHubKey",
+      "value": ""
+    },
+    {
+      "key": "partnerDemoKey",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "claveOperacion",
+      "value": ""
+    },
+    {
+      "key": "ticketId",
+      "value": ""
+    },
+    {
+      "key": "pedidoSocioId",
+      "value": ""
+    },
+    {
+      "key": "desde",
+      "value": "2026-11-01"
+    },
+    {
+      "key": "hasta",
+      "value": "2026-11-30"
+    }
+  ],
+  "item": [
+    {
+      "name": "Salesforce",
+      "item": [
+        {
+          "name": "Listar casos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{salesforceKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/salesforce/casos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar caso de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{salesforceKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/salesforce/casos",
+            "description": "Crea un caso local en Salesforce. Para ensayar el callback, usa un ticket real creado desde la PWA.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_conversacion\": \"900000001\",\n  \"id_compra\": \"0\",\n  \"asunto\": \"Prueba Postman\",\n  \"detalle\": \"Caso sintético local.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Responder ticket de NineHalo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{salesforceKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/salesforce/respuestas",
+            "description": "Configura ticketId con un ticket enviado a Salesforce. Requiere AgentId configurado en APISoporte.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_conversacion\": \"{{ticketId}}\",\n  \"contenido\": \"Respuesta de prueba desde Postman.\",\n  \"estado\": \"EN_PROCESO\",\n  \"referencia\": \"postman-{{ticketId}}-01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ContaCloud",
+      "item": [
+        {
+          "name": "Listar ventas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{contaCloudKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/contacloud/ventas"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar resumen mensual",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{contaCloudKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/contacloud/resumen"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar venta de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{contaCloudKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/contacloud/ventas",
+            "description": "Registra directamente en ContaCloud sin cobrar.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"factura\": \"NH-POSTMAN-DEMO\",\n  \"fecha\": \"2026-11-24\",\n  \"total_usd\": 9.99,\n  \"total_crc\": 4447.55\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NotifyHub",
+      "item": [
+        {
+          "name": "Listar avisos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{notifyHubKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/notifyhub/avisos"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar aviso de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{notifyHubKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/notifyhub/avisos",
+            "description": "Registra un aviso local.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"referencia\": \"postman:demo\",\n  \"destinatario\": \"prueba@example.invalid\",\n  \"mensaje\": \"Aviso de prueba de NineHalo.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "PromoHub",
+      "item": [
+        {
+          "name": "Validar NINE10 para Intermedia",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Partner-Key",
+                "value": "{{promoHubKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    2\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Validar NINE10 para Professional",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Partner-Key",
+                "value": "{{promoHubKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    3\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Rechazar NINE10 para Básica",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Partner-Key",
+                "value": "{{promoHubKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    1\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Rechazar combinación con Básica",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Partner-Key",
+                "value": "{{promoHubKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    1,\n    3\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Crear pedido Intermedia con descuento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/compras/carrito",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clave_operacion\": \"{{claveOperacion}}\",\n  \"cupon\": \"NINE10\",\n  \"items\": [\n    {\n      \"id_licencia\": 2,\n      \"cantidad\": 1,\n      \"precio_unitario\": 19.99\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partner API (Python)",
+      "item": [
+        {
+          "name": "Consultar catálogo",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{partnerDemoKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/partners/v1/licencias"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar pedido pendiente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{partnerDemoKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/partners/v1/pedidos",
+            "description": "Crea un pedido pendiente. Cambia la referencia para un pedido nuevo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"referencia\": \"TIENDA-POSTMAN-001\",\n  \"id_licencia\": 2,\n  \"cantidad\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200,201]).to.include(pm.response.code));",
+                  "if ([200, 201].includes(pm.response.code)) pm.collectionVariables.set(\"pedidoSocioId\", pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar pedido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{partnerDemoKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/partners/v1/pedidos/{{pedidoSocioId}}",
+            "description": "Ejecuta primero Registrar pedido pendiente o configura pedidoSocioId."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar estadísticas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Partner-Key",
+                "value": "{{partnerDemoKey}}"
+              }
+            ],
+            "url": "{{gatewayUrl}}/api/partners/v1/estadisticas?desde={{desde}}&hasta={{hasta}}",
+            "description": "Solo incluye pedidos confirmados del socio."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta esperada\", () => pm.expect([200]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

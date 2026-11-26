@@ -1,0 +1,19 @@
+{
+  "name": "api-tse",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simulador educativo de consulta de personas",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "mysql2": "^3.24.6"
+  }
+}

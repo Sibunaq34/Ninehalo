@@ -1,0 +1,51 @@
+﻿using API_NineHalo.Endpoints;
+using API_NineHalo.Repository;
+using API_NineHalo.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddOpenApi();
+
+// Configure CORS for the frontend. Allowed origins are read from configuration (appsettings.json).
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NineHaloFrontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://127.0.0.1:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
+// Register DB factory and application services
+builder.Services.AddTransient<IDbConnectionF, DbConnectionFactory>();
+builder.Services.AddTransient<IPersonaRepository, PersonaRepository>();
+builder.Services.AddTransient<IPersonaService, PersonaService>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+// Map application endpoints
+app.MapPersonaEndpoints();
+
+// Keep a simple test endpoint if needed
+app.MapGet("/weatherforecast", () =>
+{
+    return new[] { "API NineHalo is running." };
+}).WithName("Health");
+
+app.UseCors("NineHaloFrontend");
+app.MapPersonaEndpoints();
+app.Run();

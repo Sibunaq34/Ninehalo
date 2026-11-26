@@ -1,0 +1,247 @@
+﻿using API_NineHalo.Entities;
+using API_NineHalo.Services;
+
+namespace API_NineHalo.Endpoints
+{
+    public static class PersonaEndpoints
+    {
+        public static void MapPersonaEndpoints(this WebApplication app)
+        {
+            app.MapPost("/api/login", async (IPersonaService service, LoginRequest request) =>
+            {
+                if (string.IsNullOrWhiteSpace(request.Correo))
+                    return Results.BadRequest(new { success = false, message = "El correo es requerido.", data = (object?)null });
+                if (string.IsNullOrWhiteSpace(request.Password))
+                    return Results.BadRequest(new { success = false, message = "La contraseña es requerida.", data = (object?)null });
+                // Trim correo antes de enviar al servicio
+                var correoTrim = request.Correo?.Trim() ?? string.Empty;
+                var (Success, Message, IdUsuario) = await service.LoginAsync(correoTrim, request.Password);
+                if (!Success)
+                {
+                    if (Message.Contains("inactivo", StringComparison.OrdinalIgnoreCase))
+                        return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status403Forbidden);
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status401Unauthorized);
+                }
+
+                return Results.Ok(new { success = true, message = Message, data = new { id_usuario = IdUsuario } });
+            })
+            .WithName("Login");
+
+            app.MapPost("/api/registro", async (IPersonaService service, RegisterRequest request) =>
+            {
+                // Validaciones mínimas en el endpoint
+                if (request == null)
+                    return Results.BadRequest(new { success = false, message = "Datos de registro inválidos.", data = (object?)null });
+
+                if (string.IsNullOrWhiteSpace(request.Id) || string.IsNullOrWhiteSpace(request.Nombre) || string.IsNullOrWhiteSpace(request.Apellidos) || string.IsNullOrWhiteSpace(request.Correo) || string.IsNullOrWhiteSpace(request.Password))
+                    return Results.BadRequest(new { success = false, message = "Todos los campos son obligatorios.", data = (object?)null });
+
+                var (Success, Message, IdUsuario) = await service.RegisterAsync(request);
+
+                if (!Success)
+                {
+                    if (Message.Contains("Identificación o correo ya registrados", StringComparison.OrdinalIgnoreCase) || Message.Contains("ya está registrado", StringComparison.OrdinalIgnoreCase) || Message.Contains("duplicate", StringComparison.OrdinalIgnoreCase))
+                        return Results.Conflict(new { success = false, message = Message, data = (object?)null });
+
+                    if (Message.Contains("Correo electrónico inválido", StringComparison.OrdinalIgnoreCase) || Message.Contains("obligatorio", StringComparison.OrdinalIgnoreCase) || Message.Contains("longitud", StringComparison.OrdinalIgnoreCase))
+                        return Results.BadRequest(new { success = false, message = Message, data = (object?)null });
+
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status500InternalServerError);
+                }
+
+                // Registro exitoso
+                return Results.Json(new { success = true, message = Message, data = new { id_usuario = IdUsuario } }, statusCode: StatusCodes.Status201Created);
+            })
+            .WithName("Register");
+
+            app.MapGet("/api/perfil/{id:int}", async (IPersonaService service, int id) =>
+            {
+                if (id <= 0)
+                    return Results.BadRequest(new { success = false, message = "Id de usuario inválido.", data = (object?)null });
+
+                var (Success, Message, Profile) = await service.GetProfileAsync(id);
+                if (!Success)
+                {
+                    return Results.NotFound(new { success = false, message = Message, data = (object?)null });
+                }
+
+                return Results.Ok(new { success = true, message = Message, data = Profile });
+            })
+            .WithName("GetPerfil");
+
+            app.MapPut("/api/perfil/{id:int}", async (IPersonaService service, int id, ProfileUpdateRequest request) =>
+            {
+                if (id <= 0)
+                    return Results.BadRequest(new { success = false, message = "Id de usuario inválido.", data = (object?)null });
+
+                // Validaciones mínimas (el Service también valida)
+                if (string.IsNullOrWhiteSpace(request.Nombre) || string.IsNullOrWhiteSpace(request.Apellidos) || string.IsNullOrWhiteSpace(request.Correo))
+                    return Results.BadRequest(new { success = false, message = "Nombre, apellidos y correo electrónico son obligatorios", data = (object?)null });
+
+                var (Success, Message, Profile) = await service.UpdateProfileAsync(id, request);
+
+                if (!Success)
+                {
+                    // Interpretar mensajes conocidos del procedimiento
+                    if (Message.Contains("obligatorios", StringComparison.OrdinalIgnoreCase))
+                        return Results.BadRequest(new { success = false, message = Message, data = (object?)null });
+                    if (Message.Contains("no existe", StringComparison.OrdinalIgnoreCase))
+                        return Results.NotFound(new { success = false, message = Message, data = (object?)null });
+                    if (Message.Contains("ya está registrado", StringComparison.OrdinalIgnoreCase) || Message.Contains("registrado por otro", StringComparison.OrdinalIgnoreCase))
+                        return Results.Conflict(new { success = false, message = Message, data = (object?)null });
+
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status500InternalServerError);
+                }
+
+                return Results.Ok(new { success = true, message = Message, data = Profile });
+            })
+                .WithName("UpdatePerfil");
+
+
+            app.MapGet("/api/estadisticas/{id:int}", async (IPersonaService service, int id) =>
+            {
+                if (id <= 0)
+                    return Results.BadRequest(new
+                    {
+                        success = false,
+                        message = "Id de usuario inválido.",
+                        data = (object?)null
+                    });
+
+                var (Success, Message, Data) = await service.GetStatisticsAsync(id);
+
+                if (!Success)
+                {
+                    // El usuario no tiene una licencia activa.
+                    if (Message.Contains("licencia activa", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Results.Json(
+                            new
+                            {
+                                success = false,
+                                message = "Necesitas una licencia activa para consultar las estadísticas.",
+                                requiereLicencia = true,
+                                data = (object?)null
+                            },
+                            statusCode: StatusCodes.Status403Forbidden
+                        );
+                    }
+
+                    // No se encontró el recurso.
+                    if (Message.Contains("no encontrado", StringComparison.OrdinalIgnoreCase) ||
+                        Message.Contains("no existe", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return Results.NotFound(new
+                        {
+                            success = false,
+                            message = Message,
+                            data = (object?)null
+                        });
+                    }
+
+                    // Error inesperado.
+                    return Results.Json(
+                        new
+                        {
+                            success = false,
+                            message = Message,
+                            data = (object?)null
+                        },
+                        statusCode: StatusCodes.Status500InternalServerError
+                    );
+                }
+
+                return Results.Ok(new
+                {
+                    success = true,
+                    message = Message,
+                    data = Data
+                });
+            })
+                .WithName("GetEstadisticas");
+
+
+            app.MapGet("/api/tickets/{idUsuario:int}", async (IPersonaService service, int idUsuario, int? pagina) =>
+            {
+                if (idUsuario <= 0)
+                    return Results.BadRequest(new { success = false, message = "Id de usuario inválido.", data = (object?)null });
+
+                int page = pagina.GetValueOrDefault(1);
+                if (page < 1) page = 1;
+
+                var (Success, Message, Data) = await service.GetTicketsAsync(idUsuario, page);
+
+                if (!Success)
+                {
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status500InternalServerError);
+                }
+
+                // Formatear respuesta con nombres en snake_case, como en otras rutas
+                var responseData = new
+                {
+                    tickets = Data?.Tickets.Select(t => new
+                    {
+                        id_soporte = t.Id_Soporte,
+                        titulo = t.Titulo,
+                        fecha_creacion = t.Fecha_Creacion,
+                        estado = t.Estado
+                    }),
+                    pagina = Data?.Pagina,
+                    tamano_pagina = Data?.Tamano_Pagina,
+                    total_tickets = Data?.Total_Tickets,
+                    total_paginas = Data?.Total_Paginas
+                };
+
+                return Results.Ok(new { success = true, message = Message, data = responseData });
+            })
+            .WithName("GetTickets");
+
+            app.MapPost("/api/tickets", async (IPersonaService service, CreateTicketRequest request) =>
+            {
+                if (request == null)
+                    return Results.BadRequest(new { success = false, message = "Datos de ticket inválidos.", data = (object?)null });
+
+                if (request.Id_Usuario <= 0)
+                    return Results.BadRequest(new { success = false, message = "Id de usuario inválido.", data = (object?)null });
+                if (string.IsNullOrWhiteSpace(request.Titulo) || string.IsNullOrWhiteSpace(request.Detalle))
+                    return Results.BadRequest(new { success = false, message = "Título y detalle son obligatorios.", data = (object?)null });
+
+                var (Success, Message, IdSoporte) = await service.CreateTicketAsync(request);
+
+                if (!Success)
+                {
+                    if (Message.Contains("licencia activa", StringComparison.OrdinalIgnoreCase) || Message.Contains("licencia", StringComparison.OrdinalIgnoreCase))
+                        return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status403Forbidden);
+
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status500InternalServerError);
+                }
+
+                return Results.Json(new { success = true, message = Message, data = new { id_soporte = IdSoporte } }, statusCode: StatusCodes.Status201Created);
+            })
+            .WithName("CreateTicket");
+
+            app.MapPut("/api/perfil/{id:int}/password", async (IPersonaService service, int id, ChangePasswordRequest request) =>
+            {
+                if (id <= 0)
+                    return Results.BadRequest(new { success = false, message = "Id de usuario inválido.", data = (object?)null });
+                if (request == null || string.IsNullOrWhiteSpace(request.Password_Actual) || string.IsNullOrWhiteSpace(request.Password_Nueva))
+                    return Results.BadRequest(new { success = false, message = "Password actual y nueva son obligatorios.", data = (object?)null });
+
+                var (Success, Message) = await service.ChangePasswordAsync(id, request);
+
+                if (!Success)
+                {
+                    if (Message.Contains("Contraseña actual incorrecta", StringComparison.OrdinalIgnoreCase) || Message.Contains("no se detectaron cambios", StringComparison.OrdinalIgnoreCase) || Message.Contains("igual a la actual", StringComparison.OrdinalIgnoreCase))
+                        return Results.BadRequest(new { success = false, message = Message, data = (object?)null });
+                    if (Message.Contains("Usuario no encontrado", StringComparison.OrdinalIgnoreCase))
+                        return Results.NotFound(new { success = false, message = Message, data = (object?)null });
+
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status500InternalServerError);
+                }
+
+                return Results.Ok(new { success = true, message = Message, data = (object?)null });
+            })
+            .WithName("ChangePassword");
+        }
+    }
+}

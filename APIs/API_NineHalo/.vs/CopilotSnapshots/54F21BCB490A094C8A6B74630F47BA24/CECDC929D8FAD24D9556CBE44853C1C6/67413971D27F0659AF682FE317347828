@@ -1,0 +1,43 @@
+﻿using API_NineHalo.Endpoints;
+using API_NineHalo.Repository;
+using API_NineHalo.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddOpenApi();
+
+// Get allowed origins from appsettings.json
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? Array.Empty<string>();
+
+// Configure CORS for the frontend.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NineHaloFrontend", policy =>
+    {
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
+builder.Services.AddSingleton<IDbConnectionF, DbConnectionFactory>();
+builder.Services.AddScoped<PersonaRepository>();
+builder.Services.AddScoped<IPersonaService, PersonaService>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+app.UseCors("NineHaloFrontend");
+app.MapPersonaEndpoints();
+
+
+app.Run();

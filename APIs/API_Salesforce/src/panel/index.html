@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salesforce · Soporte NineHalo</title>
+<style>
+  body { margin: 0; background: #edf2f8; color: #183451; font: 1rem system-ui; }
+  main { max-width: 42rem; margin: 3rem auto; padding: 2rem; background: white; border-radius: 1rem; }
+  form, label { display: grid; gap: .65rem; }
+  form { margin-block: 1.5rem; }
+  input, select, textarea, button { font: inherit; padding: .65rem; }
+  button { background: #12375c; color: white; border: 0; border-radius: .35rem; cursor: pointer; }
+  button:disabled { opacity: .55; cursor: default; }
+  #detalle { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<main>
+  <h1>Responder tickets de NineHalo</h1>
+  <form id="acceso">
+    <label>Clave del socio <input id="clave" type="password" required autocomplete="off"></label>
+    <button>Cargar casos</button>
+  </form>
+  <form id="respuesta" hidden style="display:none">
+    <label>Caso <select id="caso" required></select></label>
+    <p id="detalle"></p>
+    <label>Respuesta <textarea id="contenido" rows="5" maxlength="10000" required></textarea></label>
+    <label>Estado <select id="estado"><option value="EN_PROCESO">En proceso</option><option value="RESUELTA">Resuelta</option></select></label>
+    <button>Enviar respuesta</button>
+  </form>
+  <p id="resultado" role="status" aria-live="polite"></p>
+</main>
+<script type="module" src="panel.js"></script>
+</html>

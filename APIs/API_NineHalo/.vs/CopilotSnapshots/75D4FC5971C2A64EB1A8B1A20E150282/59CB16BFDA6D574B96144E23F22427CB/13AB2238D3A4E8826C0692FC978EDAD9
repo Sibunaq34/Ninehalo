@@ -1,0 +1,46 @@
+﻿using API_NineHalo.Entities;
+using API_NineHalo.Services;
+
+namespace API_NineHalo.Endpoints
+{
+    public static class PersonaEndpoints
+    {
+        public static void MapPersonaEndpoints(this WebApplication app)
+        {
+            app.MapPost("/api/login", async (IPersonaService service, LoginRequest request) =>
+            {
+                if (string.IsNullOrWhiteSpace(request.Correo))
+                    return Results.BadRequest(new { success = false, message = "El correo es requerido.", data = (object?)null });
+                if (string.IsNullOrWhiteSpace(request.Password))
+                    return Results.BadRequest(new { success = false, message = "La contraseña es requerida.", data = (object?)null });
+                // Trim correo antes de enviar al servicio
+                var correoTrim = request.Correo?.Trim() ?? string.Empty;
+                var (Success, Message, IdUsuario) = await service.LoginAsync(correoTrim, request.Password);
+                if (!Success)
+                {
+                    if (Message.Contains("inactivo", StringComparison.OrdinalIgnoreCase))
+                        return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status403Forbidden);
+                    return Results.Json(new { success = false, message = Message, data = (object?)null }, statusCode: StatusCodes.Status401Unauthorized);
+                }
+
+                return Results.Ok(new { success = true, message = Message, data = new { id_usuario = IdUsuario } });
+            })
+            .WithName("Login");
+
+            app.MapGet("/api/perfil/{id:int}", async (IPersonaService service, int id) =>
+            {
+                if (id <= 0)
+                    return Results.BadRequest(new { success = false, message = "Id de usuario inválido.", data = (object?)null });
+
+                var (Success, Message, Profile) = await service.GetProfileAsync(id);
+                if (!Success)
+                {
+                    return Results.NotFound(new { success = false, message = Message, data = (object?)null });
+                }
+
+                return Results.Ok(new { success = true, message = Message, data = Profile });
+            })
+            .WithName("GetPerfil");
+        }
+    }
+}

@@ -1,0 +1,423 @@
+[
+  {
+    "ContainingType": "APINineHalo.Endpoints.UsuarioEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUsuarioEndpoints\u003Eb__0_2",
+    "RelativePath": "api/login",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "Login"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.AuthenticatorEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthenticatorEndpoints\u003Eb__1_6",
+    "RelativePath": "api/login/autenticador/estado",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.VerifyAuthenticatorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.AuthenticatorEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthenticatorEndpoints\u003Eb__1_7",
+    "RelativePath": "api/login/autenticador/verificar",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.VerifyAuthenticatorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UsuarioEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUsuarioEndpoints\u003Eb__0_5",
+    "RelativePath": "api/login/enviar-codigo",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.SendLoginCodeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "SendLoginCode"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PasswordRecoveryEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPasswordRecoveryEndpoints\u003Eb__0_2",
+    "RelativePath": "api/login/recuperacion/autenticador",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.RecoveryAuthenticatorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PasswordRecoveryEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPasswordRecoveryEndpoints\u003Eb__0_1",
+    "RelativePath": "api/login/recuperacion/preguntas",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.RecoveryQuestionsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PasswordRecoveryEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPasswordRecoveryEndpoints\u003Eb__0_3",
+    "RelativePath": "api/login/recuperacion/restablecer",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.RecoveryPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UsuarioEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUsuarioEndpoints\u003Eb__0_3",
+    "RelativePath": "api/login/verificar-codigo",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.VerifyLoginCodeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "VerifyLoginCode"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UsuarioEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUsuarioEndpoints\u003Eb__0_4",
+    "RelativePath": "api/perfil/{id:int}/password",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "ChangePassword"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.AuthenticatorEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthenticatorEndpoints\u003Eb__1_1",
+    "RelativePath": "api/perfil/autenticador/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.AuthenticatorEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthenticatorEndpoints\u003Eb__1_3",
+    "RelativePath": "api/perfil/autenticador/confirmar",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.AuthenticatorConfirmationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.AuthenticatorEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthenticatorEndpoints\u003Eb__1_4",
+    "RelativePath": "api/perfil/autenticador/desactivar",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.AuthenticatorConfirmationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.AuthenticatorEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthenticatorEndpoints\u003Eb__1_2",
+    "RelativePath": "api/perfil/autenticador/vincular",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.AuthenticatorPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UsuarioEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUsuarioEndpoints\u003Eb__0_0",
+    "RelativePath": "api/registro",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "RegisterUser"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UsuarioEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUsuarioEndpoints\u003Eb__0_1",
+    "RelativePath": "api/registro/verificar-codigo",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.VerifyLoginCodeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "VerifyRegistrationCode"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UbicacionEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUbicacionEndpoints\u003Eb__0_3",
+    "RelativePath": "api/ubicaciones/cantones/{id:int}/distritos",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "ListarDistritos"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UbicacionEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUbicacionEndpoints\u003Eb__0_0",
+    "RelativePath": "api/ubicaciones/paises",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "ListarPaises"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UbicacionEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUbicacionEndpoints\u003Eb__0_1",
+    "RelativePath": "api/ubicaciones/paises/{id:int}/provincias",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "ListarProvincias"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.UbicacionEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUbicacionEndpoints\u003Eb__0_2",
+    "RelativePath": "api/ubicaciones/provincias/{id:int}/cantones",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "ListarCantones"
+  }
+]

@@ -1,0 +1,42 @@
+﻿using API_NineHalo.Entities;
+using Dapper;
+using System.Data;
+
+namespace API_NineHalo.Repository
+{
+    public class PersonaRepository
+    {
+        private readonly IDbConnectionF _dbFactory;
+
+        public PersonaRepository(IDbConnectionF dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+
+        public async Task<UserAuthEntity?> GetUserByEmailAsync(string correo)
+        {
+            using var conn = _dbFactory.CreateConnection();
+            var parameters = new DynamicParameters();
+            parameters.Add("p_correo", correo, DbType.String);
+
+            var result = await conn.QueryFirstOrDefaultAsync<UserAuthEntity>("sp_login", parameters, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+        public async Task<ProfileDto?> GetProfileAsync(int idUsuario)
+        {
+            using (var connection = _dbFactory.CreateConnection())
+            { 
+                var usuario = await connection.QueryFirstOrDefaultAsync<ProfileDto>(
+                    "sp_consultar_perfil",
+                    new
+                    {
+                        p_id_usuario = idUsuario
+                    },
+                    commandType: CommandType.StoredProcedure
+                );
+                return usuario;
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS ninehalo_intento (
+ intento CHAR(36) PRIMARY KEY,
+ pedido CHAR(36) NOT NULL,
+ usuario INT UNSIGNED NOT NULL,
+ metodo VARCHAR(10) NOT NULL,
+ centavos VARCHAR(20) NOT NULL,
+ estado VARCHAR(20) NOT NULL,
+ http_status INT NULL,
+ respuesta JSON NULL,
+ creado_utc DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

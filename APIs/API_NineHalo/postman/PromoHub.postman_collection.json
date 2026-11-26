@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "NineHalo · PromoHub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:5253"
+    },
+    {
+      "key": "promoHubKey",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "claveOperacion",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Validar NINE10 para Intermedia",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Partner-Key",
+            "value": "{{promoHubKey}}"
+          }
+        ],
+        "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    2\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Validar NINE10 para Professional",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Partner-Key",
+            "value": "{{promoHubKey}}"
+          }
+        ],
+        "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    3\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Rechazar NINE10 para Básica",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Partner-Key",
+            "value": "{{promoHubKey}}"
+          }
+        ],
+        "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    1\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Rechazar combinación con Básica",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Partner-Key",
+            "value": "{{promoHubKey}}"
+          }
+        ],
+        "url": "{{gatewayUrl}}/api/socios/promohub/cupones/validar",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"NINE10\",\n  \"licencias\": [\n    1,\n    3\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Crear pedido Intermedia con descuento",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": "{{gatewayUrl}}/api/compras/carrito",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clave_operacion\": \"{{claveOperacion}}\",\n  \"cupon\": \"NINE10\",\n  \"items\": [\n    {\n      \"id_licencia\": 2,\n      \"cantidad\": 1,\n      \"precio_unitario\": 19.99\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

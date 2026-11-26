@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>8e067117-270e-44f0-9c48-1e52b32ac864</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.89" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
+    <PackageReference Include="MySql.Data" Version="26.10.0" />
+  </ItemGroup>
+
+  <ItemGroup><Compile Include="..\Shared\PartnerOutbox.cs" Link="Shared\PartnerOutbox.cs" /><Compile Include="..\Shared\ApiSecurity.cs" Link="Shared\ApiSecurity.cs" /><PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.22" /><PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" /></ItemGroup>
+  <ItemGroup><Content Update="appsettings.Bccr.local.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" /></ItemGroup>
+</Project>
+

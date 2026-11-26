@@ -1,0 +1,10 @@
+version: 1
+name: bccr-sdde
+slug: bccr-sdde
+protocol: http
+interceptRequests: true
+origin: apim.bccr.fi.cr
+scenarios:
+  - name: default
+    path: ./default.js
+    default: true

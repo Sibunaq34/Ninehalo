@@ -1,0 +1,30 @@
+purpose:
+  stands_in_for: PayPal Sandbox OAuth and Orders v2 create/get/capture, restricted to APICompras calls.
+  unblocks: Local checkout and activation verification without real credentials or money.
+assumptions:
+  - id: completed-capture-before-activation
+    status: supported
+    claim: In simulated cases APICompras activates only for the matching user, order, USD amount and COMPLETED capture.
+    reason: The real repositories and HTTP client ran against isolated MySQL and a contract-based provider stand-in.
+    verification: 17 checks passed, including amount, currency, ownership, pending and declined captures. Rejected cases left purchases pending.
+    source: APICompras/Service/PayPalClient.cs; APICompras/Service/PayPalCheckoutService.cs; paypal-verification/Program.cs; https://developer.paypal.com/api/orders/v2
+    updated_at: '2026-11-18'
+  - id: lost-response-recovery
+    status: supported
+    claim: Against this stand-in, a lost capture response is recovered by GET without repeating capture or extending license validity.
+    reason: The mock records capture before returning HTTP 500; retry observes the stored capture.
+    verification: Simulation logs showed one capture POST for the lost-response case and GET on retry; repository checks passed.
+    source: postman/mocks/paypal/default.js; paypal-verification/Program.cs; https://developer.paypal.com/api/rest/requests/
+    updated_at: '2026-11-18'
+  - id: real-sandbox-account-compatibility
+    status: unknown
+    claim: The user's Sandbox credentials and accounts can complete a purchase end to end.
+    reason: Credentials have not been configured. Published mock discovery was skipped because CLI is signed out.
+    verification: Not tested with PayPal. 11 browser checks use a fake SDK and fake backend; they do not establish provider compatibility.
+    source: PAYPAL.md; https://developer.paypal.com/studio/checkout/standard/integrate
+    updated_at: '2026-11-18'
+fingerprints:
+  - id: implementation
+    date: '2026-11-18'
+    commit: null
+    cli: '1.76.0'

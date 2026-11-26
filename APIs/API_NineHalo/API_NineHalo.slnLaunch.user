@@ -1,0 +1,35 @@
+[
+  {
+    "Name": "Nuevo perfil",
+    "Projects": [
+      {
+        "Path": "API_NineHalo\\API_Persona.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "APILicencias\\APILicencias.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "APICompras\\APICompras.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "APIUsuarios\\APIUsuarios.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "APIEstadisticas\\APIEstadisticas.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "APISoporte\\APISoporte.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Gateway\\Gateway.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

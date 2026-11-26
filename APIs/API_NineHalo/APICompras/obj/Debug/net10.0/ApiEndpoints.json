@@ -1,0 +1,337 @@
+[
+  {
+    "ContainingType": "APINineHalo.Endpoints.CompraEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCompraEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.PurchaseRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "RegisterCompra"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.CarritoEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarritoEndpoints\u003Eb__0_1",
+    "RelativePath": "api/compras/carrito",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.CartPurchaseRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "RegistrarCarrito"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PedidoPagoEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPedidoPagoEndpoints\u003Eb__0_2",
+    "RelativePath": "api/compras/carrito/{key:guid}/cancelar",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.CarritoEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarritoEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras/carrito/{key:guid}/confirmar-pago",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Endpoints.PaymentConfirmation",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "ConfirmarPagoCarrito"
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PedidoPagoEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPedidoPagoEndpoints\u003Eb__0_1",
+    "RelativePath": "api/compras/carrito/{key:guid}/estado-pago",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.FacturaEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapFacturaEndpoints\u003Eb__0_2",
+    "RelativePath": "api/compras/carrito/{key:guid}/factura",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.FacturaEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapFacturaEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras/carrito/{key:guid}/facturacion",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Entities.FacturacionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.FacturaEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapFacturaEndpoints\u003Eb__0_1",
+    "RelativePath": "api/compras/carrito/{key:guid}/facturacion",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PedidoPagoEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPedidoPagoEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras/carrito/{key:guid}/pagar/{method}",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "method",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "System.Text.Json.JsonElement",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PayPalEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPayPalEndpoints\u003Eb__0_2",
+    "RelativePath": "api/compras/carrito/{key:guid}/paypal/capturar",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PayPalEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPayPalEndpoints\u003Eb__0_1",
+    "RelativePath": "api/compras/carrito/{key:guid}/paypal/orden",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.CuponEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCuponEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras/cupones/previsualizar",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "APINineHalo.Endpoints.CouponPreviewRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.FacturaEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapFacturaEndpoints\u003Eb__0_3",
+    "RelativePath": "api/compras/facturas",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.PayPalEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPayPalEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras/paypal/config",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "APINineHalo.Endpoints.BccrEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBccrEndpoints\u003Eb__0_0",
+    "RelativePath": "api/compras/tipo-cambio",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  }
+]

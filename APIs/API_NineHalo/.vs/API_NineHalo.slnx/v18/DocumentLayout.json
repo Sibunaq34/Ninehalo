@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Universidad\\Programacion\\JavaScript\\NineHalo\\APIs\\API_NineHalo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{66680AC6-7F3F-41B0-BBFF-C962058EC085}|Gateway\\Gateway.csproj|d:\\universidad\\programacion\\javascript\\ninehalo\\apis\\api_ninehalo\\gateway\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{66680AC6-7F3F-41B0-BBFF-C962058EC085}|Gateway\\Gateway.csproj|solutionrelative:gateway\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Universidad\\Programacion\\JavaScript\\NineHalo\\APIs\\API_NineHalo\\Gateway\\appsettings.json",
+              "RelativeDocumentMoniker": "Gateway\\appsettings.json",
+              "ToolTip": "D:\\Universidad\\Programacion\\JavaScript\\NineHalo\\APIs\\API_NineHalo\\Gateway\\appsettings.json",
+              "RelativeToolTip": "Gateway\\appsettings.json",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAACkAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-11-25T21:20:31.484Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
